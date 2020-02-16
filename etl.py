@@ -6,6 +6,14 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """ 
+    This function parses songs data files and populates songs and artists tables. 
+    
+    Parameters: 
+    cur: Database cursor.
+    filepath: path of the song file to be parsed.
+    """
+    
     df = pd.read_json(filepath, lines=True)
 
     # insert song record
@@ -18,6 +26,14 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    """ 
+    This function parses log data files and populates time, users and songplay tables. 
+    
+    Parameters: 
+    cur: Database cursor.
+    filepath: path of the log file to be parsed.
+    """
+    
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -60,6 +76,17 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    """ 
+    This function is responsible for collecting all the files in a directory (filepath) and process each of these
+    files through a function (func).
+    
+    Parameters: 
+    cur: Database cursor.
+    conn: Database connection.
+    filepath: Path of the directory where all the files to be parsed are located.
+    func: Callback function to be called on each file found in filepath directory.
+    """
+    
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -79,6 +106,10 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    This function is the main entry point to our etl script. It establishes a connection with the database at the start and then
+    starts processing each data directory (song_data, log_data). It also closes the connection after all the processing is completed. 
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
